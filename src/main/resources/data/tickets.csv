@@ -1,0 +1,21 @@
+text,category
+Cannot login to my account,Login issue
+I forgot my password and cannot login,Login issue
+Login page keeps showing error,Login issue
+Unable to sign in with correct credentials,Login issue
+Account locked after failed login attempts,Login issue
+Upload failed for my document,Upload issue
+File upload keeps failing,Upload issue
+Cannot upload image to profile,Upload issue
+Upload stuck at 50 percent,Upload issue
+Getting error while uploading large file,Upload issue
+Network timeout while loading page,Network issue
+Connection keeps timing out,Network issue
+Network issue causing slow response,Network issue
+Server not responding due to timeout,Network issue
+Internet connection drops during use,Network issue
+Permission denied when accessing file,Permission issue
+I do not have permission to view this page,Permission issue
+Access denied error on admin panel,Permission issue
+User lacks permission to edit document,Permission issue
+Permission denied while downloading report,Permission issue
