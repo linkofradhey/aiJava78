@@ -42,17 +42,16 @@ public class TicketClassificationService {
 
 			Instances vectorized = vectorizeText(rawData);
 
-			// ---------- Task 3b: Attribute selection (reduce overfitting) ----------
+			// Attribute selection (reduce overfitting)
 			Instances selected = selectTopFeatures(vectorized, TOP_N_FEATURES);
 			fullData = selected;
 
-			// ---------- Task 4: Train + evaluate classifiers via cross-validation
-			// ----------
+			// Train + evaluate classifiers via cross-validation
 			runModelPipeline(new NaiveBayes(), "Naive Bayes");
 			runModelPipeline(new Logistic(), "Logistic Regression");
 			runModelPipeline(new SMO(), "SVM (SMO)");
 
-			// ---------- Task 5: Predict new tickets ----------
+			//  Predict new tickets 
 			trainSet = fullData;
 			Classifier finalModel = new SMO();
 			finalModel.buildClassifier(trainSet);
@@ -85,20 +84,16 @@ public class TicketClassificationService {
 		tfidfFilter.setLowerCaseTokens(true);
 		tfidfFilter.setOutputWordCounts(false);
 
-		// Remove noise words ("to", "my", "with", Fetc.)
-		tfidfFilter.setStopwordsHandler(new Rainbow());
+		tfidfFilter.setStopwordsHandler(new Rainbow());//STOPWORDS
 
-		// Drop words that appear fewer than 2 times across the corpus
 		tfidfFilter.setMinTermFreq(2);
 
-		// Normalize so longer tickets don't dominate the vector space
 		tfidfFilter.setNormalizeDocLength(
 				new SelectedTag(StringToWordVector.FILTER_NORMALIZE_ALL, StringToWordVector.TAGS_FILTER));
 
-		// Capture short phrases like "cannot login" as well as single words
 		NGramTokenizer tokenizer = new NGramTokenizer();
-		tokenizer.setNGramMinSize(1);
-		tokenizer.setNGramMaxSize(2);
+		tokenizer.setNGramMinSize(1); // SAVE AS SINGLE WORDS
+		tokenizer.setNGramMaxSize(2);// SAVE AS DOUBLE WORDS
 		tfidfFilter.setTokenizer(tokenizer);
 
 		// Collapse word variants: login/logging/logged -> log
@@ -115,7 +110,7 @@ public class TicketClassificationService {
 		return vectorized;
 	}
 
-	// Task 3b - Attribute Selection (keep only the most informative terms)
+	// keep only the most informative terms
 	private static Instances selectTopFeatures(Instances data, int topN) throws Exception {
 		attrSelectFilter = new AttributeSelection();
 		InfoGainAttributeEval eval = new InfoGainAttributeEval();
@@ -133,7 +128,7 @@ public class TicketClassificationService {
 		return reduced;
 	}
 
-	// Task 4 - Train + Evaluate via k-fold Cross-Validation
+	// Train + Evaluate via k-fold Cross-Validation
 	public static void runModelPipeline(Classifier model, String modelName) throws Exception {
 		System.out.println("\n================================");
 		System.out.println(modelName + " (" + NUM_FOLDS + "-fold CV)");
@@ -148,7 +143,7 @@ public class TicketClassificationService {
 		System.out.printf("F1       : %.4f\n", evaluation.weightedFMeasure());
 	}
 
-	// Task 5 - Predict new/unseen text
+	// Predict new/unseen text
 	private static String predictNewText(String text, Classifier model) throws Exception {
 		ArrayList<Attribute> attrs = new ArrayList<>();
 		attrs.add(new Attribute("text", (ArrayList<String>) null));

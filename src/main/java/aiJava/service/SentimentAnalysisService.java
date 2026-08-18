@@ -25,26 +25,24 @@ public class SentimentAnalysisService {
 
     public static void main(String[] args) {
         try {
-            // ---------- Task 1: Load ----------
             Instances rawData = loadData(SOURCE_PATH);
             System.out.println("Loaded " + rawData.numInstances() + " reviews");
 
-            // ---------- Task 2: Check class balance ----------
             checkClassBalance(rawData);// checking whether the dataset is balanced
 
-            // ---------- Task 3: Preprocess + TF-IDF ----------
+            // Preprocess + TF-IDF 
             Instances vectorized = vectorizeText(rawData);
 
-            // ---------- Task 4: Stratified Split + Train ----------
+            // Stratified Split + Train
             stratifiedSplit(vectorized, 5); // 5-fold = 80/20 split so here we are splitting the dataset 
             Classifier model = new NaiveBayesMultinomial();
             runModelPipeline(model, "Naive Bayes (Multinomial)");
 
-            // ---------- Task 5: Cross-Validation (more reliable) ----------
+            // Cross-Validation (more reliable) 
             System.out.println("\n=== 10-Fold Cross Validation ===");
             crossValidate(vectorized, new NaiveBayesMultinomial(), 10);
 
-            // ---------- Task 6: Predict new reviews ----------
+            // Predict new reviews 
             String[] newReviews = {
                 "Product is amazing",
                 "Worst experience",
@@ -66,7 +64,7 @@ public class SentimentAnalysisService {
         }
     }
 
-    // Task 1 - Load
+    // Load
     private static Instances loadData(String path) throws Exception {
         CSVLoader loader = new CSVLoader();
         loader.setSource(new File(path));
@@ -111,7 +109,7 @@ public class SentimentAnalysisService {
         return vectorized;
     }
 
-    // Task 4 - Stratified Split (Balanced Train/Test)
+    // Stratified Split (Balanced Train/Test)
     private static void stratifiedSplit(Instances data, int folds) throws Exception {
         data.randomize(new Random(42));
         data.stratify(folds);
@@ -154,7 +152,7 @@ public class SentimentAnalysisService {
         System.out.println(eval.toMatrixString());
     }
 
-    // Task 5 - Predict Sentiment for New Reviews
+    // Predict Sentiment for New Reviews
     private static String predictNewText(String text, Classifier model) throws Exception {
         ArrayList<Attribute> attrs = new ArrayList<>();
         attrs.add(new Attribute("review", (ArrayList<String>) null));
