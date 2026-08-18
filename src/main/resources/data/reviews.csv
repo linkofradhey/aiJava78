@@ -1,17 +1,162 @@
 review,sentiment
-Product is amazing and works perfectly,Positive
-I love this product so much,Positive
-Great quality and fast delivery,Positive
-Excellent value for money,Positive
-Works exactly as described very happy,Positive
-Best purchase I have made this year,Positive
-Highly recommend this to everyone,Positive
-Fantastic build quality and design,Positive
-Worst experience ever with this product,Negative
-Product broke after one day of use,Negative
-Terrible quality do not buy,Negative
-Very disappointed with this purchase,Negative
-Waste of money completely useless,Negative
-Item arrived damaged and defective,Negative
-Customer service was very unhelpful,Negative
-Not worth the price at all,Negative
+this product is amazing and works perfectly,Positive
+this product is terrible and does not work,Negative
+i absolutely love this product,Positive
+i am very disappointed with this purchase,Negative
+great quality and very fast delivery,Positive
+worst product i have ever bought in my life,Negative
+excellent value for the money i paid,Positive
+the quality is extremely poor and cheap,Negative
+works exactly as described i am very happy,Positive
+broke after just two days of normal use,Negative
+best purchase i have made this year,Positive
+complete waste of money do not buy this,Negative
+i highly recommend this to everyone,Positive
+the product looks nothing like the pictures shown,Negative
+fantastic build quality and beautiful design,Positive
+customer service was rude and completely unhelpful,Negative
+this exceeded my expectations in every way,Positive
+i want a full refund this is unacceptable,Negative
+very reliable product and easy to use,Positive
+the delivery was very late and item was damaged,Negative
+the packaging was excellent and very secure,Positive
+stopped working after just one week of use,Negative
+customer support was friendly and very helpful,Positive
+very cheaply made and feels like it will break,Negative
+superb performance and amazing features,Positive
+the instructions were confusing and poorly written,Negative
+i am extremely satisfied with this purchase,Positive
+does not work as advertised at all very misleading,Negative
+high quality materials and great craftsmanship,Positive
+i regret buying this product total disappointment,Negative
+delivery was much quicker than expected,Positive
+the material feels very flimsy and low quality,Negative
+the product feels very premium and durable,Positive
+overpriced for such terrible and poor quality,Negative
+five stars this product is well deserved,Positive
+the product arrived broken and in bad condition,Negative
+easy to set up and ready to use right away,Positive
+horrible experience i will never buy from here again,Negative
+this is exactly what i was looking for,Positive
+the battery dies within just an hour of use,Negative
+this product saved me a lot of time,Positive
+the software keeps crashing and freezing constantly,Negative
+outstanding quality for such a low price,Positive
+very noisy product and extremely annoying to use,Negative
+i would definitely buy this product again,Positive
+the screen stopped working after just three days,Negative
+the color and finish look absolutely stunning,Positive
+terrible packaging and the item was not protected,Negative
+my whole family loves this product,Positive
+the product has a very strong unpleasant chemical smell,Negative
+it works seamlessly with all my other devices,Positive
+buttons stopped responding after just a few uses,Negative
+i am very impressed by the attention to detail,Positive
+the color is completely different from what was shown,Negative
+this brand never disappoints me at all,Positive
+i have been waiting for a replacement for weeks now,Negative
+lightweight yet very sturdy and well built,Positive
+the product overheats very quickly and is dangerous,Negative
+perfect gift idea and it arrived right on time,Positive
+very uncomfortable to use and causes hand pain,Negative
+battery life lasts much longer than advertised,Positive
+the zipper broke on the very first day of use,Negative
+very silent operation which is a huge plus,Positive
+misleading product description and false advertising,Negative
+great after sales service and solid warranty,Positive
+the product is way too heavy and not portable,Negative
+the installation process was completely hassle free,Positive
+it scratches very easily even with careful use,Negative
+eco friendly packaging which i really appreciate,Positive
+the sound quality is terrible and very distorted,Negative
+works great even in extreme weather conditions,Positive
+the product does not fit as described at all,Negative
+very compact and portable i love the design,Positive
+very slow performance and constant lag issues,Negative
+customer service resolved my issue within minutes,Positive
+the paint started peeling off after just one wash,Negative
+the product has a very modern and sleek look,Positive
+the charging cable stopped working within a week,Negative
+setup took less than five minutes very easy,Positive
+this product is not worth even half the price,Negative
+consistent performance even after months of daily use,Positive
+the camera quality is very blurry and unusable,Negative
+absolutely worth every single penny i spent,Positive
+the product leaks and is not waterproof at all,Negative
+the sound quality is crystal clear and loud,Positive
+very difficult to assemble and missing parts inside,Negative
+very smooth and responsive user interface,Positive
+the wifi connectivity keeps dropping every few minutes,Negative
+the camera quality on this device is outstanding,Positive
+the product stopped charging after just two weeks,Negative
+very comfortable to hold and use every day,Positive
+extremely fragile and broke during normal handling,Negative
+the display is bright vivid and very sharp,Positive
+the remote control does not work from a short distance,Negative
+really impressed with the speed and performance,Positive
+the fan makes a loud grinding noise constantly,Negative
+top notch quality and very well made product,Positive
+the product smells like cheap plastic and chemicals,Negative
+this is the best product in its category,Positive
+the hinges broke after opening it just a few times,Negative
+wonderful product that works as advertised,Positive
+the display has dead pixels right out of the box,Negative
+the material quality is surprisingly good,Positive
+the product gets extremely hot during normal use,Negative
+fast shipping and the item was well packed,Positive
+the bluetooth connection drops every few seconds,Negative
+love the new features in this updated version,Positive
+the stitching came apart after wearing it just once,Negative
+great product for beginners and professionals alike,Positive
+the motor burned out after only a month of use,Negative
+the design is elegant and very functional,Positive
+the product wobbles and is very unstable on surfaces,Negative
+very energy efficient and saves electricity,Positive
+the lid does not close properly and leaks everywhere,Negative
+the product is very quiet during operation,Positive
+the return process was extremely complicated and slow,Negative
+excellent product with no issues at all,Positive
+the product started rusting after just one week,Negative
+i am happy with this purchase overall great,Positive
+the manual is missing important safety instructions,Negative
+smooth delivery experience and great product,Positive
+the product emits a loud beeping noise randomly,Negative
+the build quality is rock solid and durable,Positive
+the edges are sharp and almost cut my hand,Negative
+perfect size and fits exactly where i needed it,Positive
+the suction cups do not stick to any surface,Negative
+the product looks even better in person,Positive
+the timer function does not work at all,Negative
+very user friendly and intuitive controls,Positive
+the product arrived with missing accessories inside,Negative
+great value compared to similar products,Positive
+the lock mechanism jammed after a few uses,Negative
+the accessories included are very useful,Positive
+the wheels fell off after just one day of use,Negative
+this product makes my daily life much easier,Positive
+the antenna broke off during normal use,Negative
+very impressed with the overall quality,Positive
+the power button stopped working after a week,Negative
+the performance is fast and very reliable,Positive
+the handle is very uncomfortable and hurts my grip,Negative
+i received the product in perfect condition,Positive
+the adhesive does not stick and keeps falling off,Negative
+the features are exactly what i needed,Positive
+the product makes a rattling noise when shaken,Negative
+the product works flawlessly every single time,Positive
+the cord is way too short and not practical,Negative
+amazing product and amazing customer service,Positive
+the sensor stopped detecting motion after a week,Negative
+very durable and built to last a long time,Positive
+the product leaves stains on surfaces when used,Negative
+the instructions were clear and easy to follow,Positive
+the clasp breaks very easily with minimal force,Negative
+great product for the whole family to enjoy,Positive
+the nozzle keeps clogging after every single use,Negative
+i am very pleased with this purchase,Positive
+the rubber grip peeled off within a few days,Negative
+this product is a game changer for me,Positive
+the lens cracked without any impact or dropping,Negative
+the quality exceeded all my expectations,Positive
+the stand is wobbly and tips over very easily,Negative
+i cannot imagine my life without this product,Positive

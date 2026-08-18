@@ -1,51 +1,65 @@
 package aiJava.service;
 
-
+import weka.attributeSelection.InfoGainAttributeEval;
+import weka.attributeSelection.Ranker;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.Logistic;
+import weka.classifiers.functions.SMO;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
-import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.SelectedTag;
 import weka.core.converters.CSVLoader;
-import weka.core.converters.ConverterUtils.DataSource;
+import weka.core.stemmers.SnowballStemmer;
+import weka.core.stopwords.Rainbow;
+import weka.core.tokenizers.NGramTokenizer;
 import weka.filters.Filter;
+import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
+
 public class TicketClassificationService {
 
-	private static final String SOURCE_PATH = "data/tickets.csv"; // columns: text, category (text must be String type)
-	private static Instances trainSet;
-	private static Instances testSet;
+	private static final String SOURCE_PATH = "data/tickets.csv";
+	private static final int NUM_FOLDS = 5;
+	private static final int TOP_N_FEATURES = 50;
+
+	private static Instances fullData; 
+	private static Instances trainSet; 
 	private static StringToWordVector tfidfFilter;
+	private static AttributeSelection attrSelectFilter;
 
 	public static void main(String[] args) {
 		try {
-			// ---------- Task 1: Load ----------
 			Instances rawData = loadData(SOURCE_PATH);
 			System.out.println("Loaded " + rawData.numInstances() + " tickets");
 
-			// ---------- Task 2 & 3: Preprocess + TF-IDF vectorization ----------
-			// StringToWordVector handles tokenizing, lowercasing, stopword removal,
-			// and TF-IDF weighting all in one filter — Weka's equivalent of
-			// Python's TfidfVectorizer.
 			Instances vectorized = vectorizeText(rawData);
 
-			// ---------- Task 4: Train classifier ----------
-			prepareData(vectorized, 0.75);
+			// ---------- Task 3b: Attribute selection (reduce overfitting) ----------
+			Instances selected = selectTopFeatures(vectorized, TOP_N_FEATURES);
+			fullData = selected;
+
+			// ---------- Task 4: Train + evaluate classifiers via cross-validation
+			// ----------
 			runModelPipeline(new NaiveBayes(), "Naive Bayes");
 			runModelPipeline(new Logistic(), "Logistic Regression");
+			runModelPipeline(new SMO(), "SVM (SMO)");
 
 			// ---------- Task 5: Predict new tickets ----------
-			String[] newTickets = { "Cannot login", "Upload failed", "Network timeout", "Permission denied" };
-			Classifier finalModel = new NaiveBayes();
+			// Train final model on ALL available data (not just a split) for real
+			// predictions
+			trainSet = fullData;
+			Classifier finalModel = new SMO();
 			finalModel.buildClassifier(trainSet);
+
+			String[] newTickets = { "Cannot login", "Upload failed", "Network timeout", "Permission denied" };//Based on the data we are suggesting the issue
 			for (String ticket : newTickets) {
 				String prediction = predictNewText(ticket, finalModel);
 				System.out.println("\"" + ticket + "\" -> " + prediction);
@@ -56,38 +70,47 @@ public class TicketClassificationService {
 		}
 	}
 
-	// =========================================================
-	// Task 1 - Load
-	// =========================================================
-	private static Instances loadData(String path) throws Exception {
-		// Using CSVLoader directly (not DataSource) so we can force the "text"
-		// column to load as STRING type. Left to auto-detect, Weka's loader
-		// treats short repeated-looking text as NOMINAL (categorical) instead
-		// of free text, which silently breaks StringToWordVector downstream —
-		// it will vectorize almost nothing and every model will score ~0%.
+		private static Instances loadData(String path) throws Exception {
 		CSVLoader loader = new CSVLoader();
 		loader.setSource(new File(path));
-		loader.setStringAttributes("1"); // column 1 = "text"
+		loader.setStringAttributes("1");
 		Instances data = loader.getDataSet();
 		data.setClassIndex(data.attribute("category").index());
 		return data;
 	}
 
-	// =========================================================
-	// Task 2 & 3 - Preprocessing + TF-IDF Vectorization
-	// =========================================================
-	private static Instances vectorizeText(Instances data) throws Exception {
+		private static Instances vectorizeText(Instances data) throws Exception {
 		tfidfFilter = new StringToWordVector();
-		tfidfFilter.setAttributeIndices("first"); // "text" column is the string attribute to vectorize
-		tfidfFilter.setIDFTransform(true);  // apply IDF weighting
-		tfidfFilter.setTFTransform(true);   // apply TF weighting -> together, TF-IDF
-		tfidfFilter.setLowerCaseTokens(true);   // lowercase, same as Python's text.lower()
-		tfidfFilter.setOutputWordCounts(false); // false = TF-IDF weights, not raw counts
+		tfidfFilter.setAttributeIndices("first");
+		tfidfFilter.setIDFTransform(true);
+		tfidfFilter.setTFTransform(true);
+		tfidfFilter.setLowerCaseTokens(true);
+		tfidfFilter.setOutputWordCounts(false);
+
+		// Remove noise words ("to", "my", "with", Fetc.)
+		tfidfFilter.setStopwordsHandler(new Rainbow());
+
+		// Drop words that appear fewer than 2 times across the corpus
+		tfidfFilter.setMinTermFreq(2);
+
+		// Normalize so longer tickets don't dominate the vector space
+		tfidfFilter.setNormalizeDocLength(
+				new SelectedTag(StringToWordVector.FILTER_NORMALIZE_ALL, StringToWordVector.TAGS_FILTER));
+
+		// Capture short phrases like "cannot login" as well as single words
+		NGramTokenizer tokenizer = new NGramTokenizer();
+		tokenizer.setNGramMinSize(1);
+		tokenizer.setNGramMaxSize(2);
+		tfidfFilter.setTokenizer(tokenizer);
+
+		// Collapse word variants: login/logging/logged -> log
+		tfidfFilter.setStemmer(new SnowballStemmer());
+
+		// Cap vocabulary to avoid an explosion of sparse attributes
+		tfidfFilter.setWordsToKeep(1000);
 
 		tfidfFilter.setInputFormat(data);
 		Instances vectorized = Filter.useFilter(data, tfidfFilter);
-
-		// class index shifts after filtering — re-point it at "category"
 		vectorized.setClassIndex(vectorized.attribute("category").index());
 
 		System.out.println("Vocabulary size (attributes): " + (vectorized.numAttributes() - 1));
@@ -95,37 +118,46 @@ public class TicketClassificationService {
 	}
 
 	// =========================================================
-	// Task 4 - Train Classifier
+	// Task 3b - Attribute Selection (keep only the most informative terms)
 	// =========================================================
-	public static void prepareData(Instances data, double trainRatio) {
-		data.randomize(new Random(42));
-		int trainSize = (int) Math.round(data.numInstances() * trainRatio);
-		int testSize = data.numInstances() - trainSize;
-		trainSet = new Instances(data, 0, trainSize);
-		testSet = new Instances(data, trainSize, testSize);
-		System.out.println("Train instances: " + trainSet.numInstances() + "  Test instances: " + testSet.numInstances());
+	private static Instances selectTopFeatures(Instances data, int topN) throws Exception {
+		attrSelectFilter = new AttributeSelection();
+		InfoGainAttributeEval eval = new InfoGainAttributeEval();
+		Ranker ranker = new Ranker();
+		ranker.setNumToSelect(Math.min(topN, data.numAttributes() - 1));
+
+		attrSelectFilter.setEvaluator(eval);
+		attrSelectFilter.setSearch(ranker);
+		attrSelectFilter.setInputFormat(data);
+
+		Instances reduced = Filter.useFilter(data, attrSelectFilter);
+		reduced.setClassIndex(reduced.attribute("category").index());
+
+		System.out.println("Reduced to " + (reduced.numAttributes() - 1) + " informative attributes");
+		return reduced;
 	}
 
+	// =========================================================
+	// Task 4 - Train + Evaluate via k-fold Cross-Validation
+	// =========================================================
 	public static void runModelPipeline(Classifier model, String modelName) throws Exception {
 		System.out.println("\n================================");
-		System.out.println(modelName);
+		System.out.println(modelName + " (" + NUM_FOLDS + "-fold CV)");
 		System.out.println("================================");
 
-		model.buildClassifier(trainSet);
-		Evaluation evaluation = new Evaluation(trainSet);
-		evaluation.evaluateModel(model, testSet);
+		Evaluation evaluation = new Evaluation(fullData);
+		evaluation.crossValidateModel(model, fullData, NUM_FOLDS, new Random(42));
 
 		System.out.printf("Accuracy : %.2f%%\n", evaluation.pctCorrect());
 		System.out.printf("Precision: %.4f\n", evaluation.weightedPrecision());
 		System.out.printf("Recall   : %.4f\n", evaluation.weightedRecall());
+		System.out.printf("F1       : %.4f\n", evaluation.weightedFMeasure());
 	}
 
 	// =========================================================
 	// Task 5 - Predict new/unseen text
 	// =========================================================
 	private static String predictNewText(String text, Classifier model) throws Exception {
-		// Build a single-row Instances with the same string attribute Weka expects,
-		// then apply the SAME fitted TF-IDF filter (never refit on new data).
 		ArrayList<Attribute> attrs = new ArrayList<>();
 		attrs.add(new Attribute("text", (ArrayList<String>) null));
 		ArrayList<String> categories = new ArrayList<>();
@@ -142,9 +174,10 @@ public class TicketClassificationService {
 		newData.add(inst);
 
 		Instances vectorizedNew = Filter.useFilter(newData, tfidfFilter);
-		vectorizedNew.setClassIndex(vectorizedNew.attribute("category").index());
+		Instances selectedNew = Filter.useFilter(vectorizedNew, attrSelectFilter);
+		selectedNew.setClassIndex(selectedNew.attribute("category").index());
 
-		double result = model.classifyInstance(vectorizedNew.instance(0));
-		return vectorizedNew.classAttribute().value((int) result);
+		double result = model.classifyInstance(selectedNew.instance(0));
+		return selectedNew.classAttribute().value((int) result);
 	}
 }
