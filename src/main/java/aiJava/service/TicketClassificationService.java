@@ -53,13 +53,11 @@ public class TicketClassificationService {
 			runModelPipeline(new SMO(), "SVM (SMO)");
 
 			// ---------- Task 5: Predict new tickets ----------
-			// Train final model on ALL available data (not just a split) for real
-			// predictions
 			trainSet = fullData;
 			Classifier finalModel = new SMO();
 			finalModel.buildClassifier(trainSet);
 
-			String[] newTickets = { "Cannot login", "Upload failed", "Network timeout", "Permission denied" };//Based on the data we are suggesting the issue
+			String[] newTickets = { "Cannot login", "Upload failed", "Network timeout", "Permission denied" };
 			for (String ticket : newTickets) {
 				String prediction = predictNewText(ticket, finalModel);
 				System.out.println("\"" + ticket + "\" -> " + prediction);
@@ -117,9 +115,7 @@ public class TicketClassificationService {
 		return vectorized;
 	}
 
-	// =========================================================
 	// Task 3b - Attribute Selection (keep only the most informative terms)
-	// =========================================================
 	private static Instances selectTopFeatures(Instances data, int topN) throws Exception {
 		attrSelectFilter = new AttributeSelection();
 		InfoGainAttributeEval eval = new InfoGainAttributeEval();
@@ -137,9 +133,7 @@ public class TicketClassificationService {
 		return reduced;
 	}
 
-	// =========================================================
 	// Task 4 - Train + Evaluate via k-fold Cross-Validation
-	// =========================================================
 	public static void runModelPipeline(Classifier model, String modelName) throws Exception {
 		System.out.println("\n================================");
 		System.out.println(modelName + " (" + NUM_FOLDS + "-fold CV)");
@@ -154,9 +148,7 @@ public class TicketClassificationService {
 		System.out.printf("F1       : %.4f\n", evaluation.weightedFMeasure());
 	}
 
-	// =========================================================
 	// Task 5 - Predict new/unseen text
-	// =========================================================
 	private static String predictNewText(String text, Classifier model) throws Exception {
 		ArrayList<Attribute> attrs = new ArrayList<>();
 		attrs.add(new Attribute("text", (ArrayList<String>) null));
