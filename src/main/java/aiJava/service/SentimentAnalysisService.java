@@ -167,7 +167,7 @@ public class SentimentAnalysisService {
         newData.setClassIndex(1);
 
         Instance inst = new DenseInstance(2);
-        inst.setValue(attrs.get(0), text.toLowerCase()); // Lowercase to match training
+        inst.setValue(attrs.get(0), text.toLowerCase()); 
         newData.add(inst);
 
         Instances vectorizedNew = Filter.useFilter(newData, tfidfFilter);
